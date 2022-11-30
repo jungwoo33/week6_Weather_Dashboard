@@ -1,124 +1,256 @@
-// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-// in the html.
-$(function () {
-    // TODO: Add a listener for click events on the save button. This code should
-    // use the id in the containing time-block as a key to save the user input in
-    // local storage. HINT: What does `this` reference in the click listener
-    // function? How can DOM traversal be used to get the "hour-x" id of the
-    // time-block containing the button that was clicked? How might the id be
-    // useful when saving the description in local storage?
-    //
-    // TODO: Add code to apply the past, present, or future class to each time
-    // block by comparing the id to the current hour. HINTS: How can the id
-    // attribute of each time-block be used to conditionally add or remove the
-    // past, present, and future classes? How can Day.js be used to get the
-    // current hour in 24-hour time?
-    //
-    // TODO: Add code to get any user input that was saved in localStorage and set
-    // the values of the corresponding textarea elements. HINT: How can the id
-    // attribute of each time-block be used to do this?
-    //
-    // TODO: Add code to display the current date in the header of the page.
-
-    var my_schedule = []; // create empty schedule at the beginning
-
-    $("button").click(function () {
-        //console.log($(this).parent()[0]); // <div id="hour-9" ~
-        //console.log($(this).parent()[0].children[1]); // <textarea class = ~
-        //console.log($(this).parent()[0].children[1].value); // this returns the input value
-
-        // so, now let's start
-        var input_text = $(this).parent()[0].children[1].value
-        var div_id = $(this).parent().attr('id'); // hour-9
-        var id_hr2 = div_id.split("-"); // ['hour','9']
-        var id_hr = id_hr2[1]; // 9
-        for (var i = 0; i < 9; i++) {
-            var schedule_hr = i + 9;
-            if (schedule_hr === Number(id_hr)) {
-                my_schedule[i] = input_text;
-                //console.log(i);
-                //console.log(my_schedule[i]);
-                console.log(input_text);
-
-                /* Note: here, the original "setItem" approach does not work correctly.
-                    it also store an empty space and comma as an array value.
-                    So, it is difficult to handle the data.
-                    That is why I use JSON approach.
-                */
-                //localStorage.setItem("my_schedule",my_schedule); // store in the localStorage
-                localStorage["my_schedule"] = JSON.stringify(my_schedule); // store in the localStorage
-            }
-        }
-    });
-
-    function retrieve_data() {
-        /* 
-        if there is a saved data in the local storage, retrieve the data
-        Note: 
-            Initial try using localStorage.getItem didn't work well since it also saves an empty space and comma.
-                my_schedule = localStorage.getItem("my_schedule"); // save stored data to the global variable
-            That is why I use JSON approach.
-        */
-        if (localStorage.getItem("my_schedule") !== null) {
-            my_schedule = JSON.parse(localStorage["my_schedule"]); // save stored data to the global variable
-
-            // display the stored schedule
-            for (var i = 0; i < 9; i++) {
-                if (my_schedule[i]) {
-                    // if it is not empty, retrieve the data
-                    $("textarea")[i].value = my_schedule[i];
-                }
-            }
-        }
-    }
-    function update_past_present_future() {
-        var today = new Date();
-        hour = today.getHours(); // 'number'; 0 ~ 23
-        // Note, I am useing 0 ~ 23 hour system, thus it is not required to distinguish AM/PM
-
-        var past_text = 'row time-block past';
-        var present_text = 'row time-block present';
-        var future_text = 'row time-block future';
-
-        var jw = document.querySelector('.container-lg');
-        for (var i = 0; i < 9; i++) {
-            var schedule_hr = i + 9; // starting from 9AM
-            if (schedule_hr < hour) {
-                // update to past
-                jw.children[i].className = past_text; // change the class to the new_text
-            } else if (schedule_hr == hour) {
-                // update to present
-                jw.children[i].className = present_text; // change the class to the new_text
-            } else {
-                // update to future
-                jw.children[i].className = future_text; // change the class to the new_text
-            }
-        }
-    }
-
-    function display_today() {
-        var today = new Date();
-        var currentDay = $('#currentDay');
-        //currentDay.text(weekday + ', ' + month + ', ' + day + ', ' + year);
-        currentDay.text(today.toDateString()); // direct & simple approach
-    }
-
-    function display_today_dayjs(){
-        // well, I don't see significant benefit using "dayjs" over original java here.
-        var today = dayjs().format('MMM D, YYYY');
-        var currentDay = $('#currentDay');
-        currentDay.text(today);
-    }
-    function open_scheduler() {
-        //display_today(); // display today at the top; java version
-        display_today_dayjs(); // display today at the top; dayjs version
-        update_past_present_future(); // update scheduler color depending on the current time
-        retrieve_data(); // retrieve last data from the local storage
-    }
-    open_scheduler();
-
-});
+/* Link to HTML elements =============================================== */
 
 
 
+
+
+// var start_quiz = document.querySelector("#start_quiz"); // select the "Start Quiz" button
+// var stopwatch = document.querySelector("#stopwatch");
+// var quiz = document.querySelector("#quiz");
+// //var correct_wrong = document.querySelector("#correct_wrong"); // I will not include this 
+// var next = document.querySelector("#next"); // "Next" button
+// var prev = document.querySelector("#prev"); // "Prev" button
+// /* End of HTML elements linking ======================================== */
+
+// / * pre-define global variables: ======================================== */
+// var elapsed_question_num = 0; // total elapsing (showing or solving) questions
+// var user_selection = []; // array of user answer choices for each question
+// var timer_status = "off"; // set initial timer as "off" condition
+// var time_left; // inital time left in [sec]; it will be defined later
+// var final_score; // user's final test score
+// /* End of global variables ============================================= */
+
+// /* create questions ===================================================== */
+// import {my_questions} from "./my_questions.js"; // import my_questions from my_questions.js:
+
+// // check if they are correctly coded...
+// // Note: this is for the test...
+// function console_test(){
+//     console.log(my_questions.length);
+//     console.log(my_questions[0]);
+//     console.log(my_questions[0].question);
+//     console.log(my_questions[0].choices);
+//     console.log(my_questions[0].choices[0]);    
+//     console.log(typeof "my_questions[0].correct_answer"); // string
+// }
+// /* end of question creation ============================================ */
+
+
+// /* create question displaying functions ================================ */
+// // This will remove previous question displaying:
+// function remove_previous_question(){
+//     // remove previous elements:
+//     while(quiz.firstChild){
+//         quiz.removeChild(quiz.firstChild);
+//     }
+//     //correct_wrong.children[0].textContent = "";
+// }
+
+// // This will reset the test to the initial point:
+// function reset(){
+//     remove_previous_question();
+
+//     // reset() requires additional process as follows:
+//     elapsed_question_num = 0; // reset to 0
+
+//     // delete "Prev" button and show "Next" button
+//     next.style.display = "inline-block";
+//     prev.style.display = "none";
+
+//     // kill previous timer and restart timer. 
+//     reset_timer();
+// }
+
+// // This will display the next question:
+// function display_next_question(){
+//     remove_previous_question(); // remove previous question before showing the next question:
+//     if(elapsed_question_num < my_questions.length){
+//         var i = elapsed_question_num;
+
+//         // show "Prev" button from the second question
+//         next.style.display = "inline-block";
+//         if(elapsed_question_num !== 0){
+//             var prev = document.querySelector("#prev");
+//             prev.style.display = "inline-block";
+//         }
+
+//         var p = document.createElement("p"); // create <p></p> element for question
+//         p.textContent = my_questions[i].question; // include question in <p></p>
+//         quiz.appendChild(p);
+
+//         var ul = document.createElement("ul"); // create unordered list (ul)
+//         var choice_length = my_questions[i].choices.length; //each question's choice length; This will allow me to have different length choices.
+//         for(var j=0; j<choice_length; j++){
+//             // include radio button lists
+//             var li = document.createElement("li");
+//             var input = document.createElement("input");
+//             input.setAttribute("type","radio");
+//             input.setAttribute("name","answer");
+
+//             input.setAttribute("id","radio_button");
+
+//             input.setAttribute("value",j+1); // 1, 2, 3, 4
+//             var label = document.createElement("label");
+//             label.setAttribute("for","radio_button");
+            
+//             label.textContent = my_questions[i].choices[j];
+//             li.appendChild(input);
+//             li.appendChild(label);
+//             ul.appendChild(li);
+//         }
+//         quiz.appendChild(ul);
+
+//         // if user select an answer and click "Next" button, 
+//         // read the user selection and save it to an array, and
+//         // increase "elapsed_question_num" to move to the next question
+//         document.getElementById('next').onclick = function(){
+//             var selected = document.querySelector('input[type=radio][name=answer]:checked');
+//             // if nothing is selected, show alert,
+//             // otherwise move foreward.
+//             if(selected === null){
+//                 var start = Date.now(); // [milli-second]
+//                 //console.log(start);
+//                 window.alert("Please choose an answer!");
+//                 var finish = Date.now(); // [milli-second]
+//                 //console.log(finish);
+//                 var time_reduction = Math.floor((Number(finish) - Number(start))/1000); // only consider [integer] part
+//                 //console.log(time_reduction);
+
+//                 // subtract "pausing" time from the time remaining
+//                 time_left = time_left - time_reduction;
+//             }else{
+//                 user_selection[elapsed_question_num] = selected.value;
+//                 //console.log(user_selection[elapsed_question_num]);
+
+//                 // show correct/wrong & 10 sec time reduction
+//                 var i = elapsed_question_num;
+//                 if(Number(user_selection[i]) === Number(my_questions[i].correct_answer)){
+//                     // show correct!
+//                     //correct_wrong.children[0].textContent = "Correct!"; // I will not show this...
+//                 }else{
+//                     // show wrong! & 10 sec time reduction
+//                     //correct_wrong.children[0].textContent = "Wrong!" // I will not show this...
+//                     time_left = time_left - 10;
+//                 }
+//                 elapsed_question_num++;
+//             }
+//         }
+//         document.getElementById('prev').onclick = function(){
+//             elapsed_question_num--;
+//             remove_previous_question();
+//             display_next_question();
+//         }
+//         next.addEventListener("click",display_next_question);
+//     }else{
+//         // delete previous question and show the final result
+//         show_score();      
+//         reset_timer();
+//         //stopwatch.children[0].textContent = " "
+//     }
+// }
+// // End of question displaying function ================================= /
+
+// function show_score(){
+//     // delete previous question and show the final result
+//     remove_previous_question();
+//     var score = 0;
+//     for(var i=0;i<my_questions.length;i++){
+//         //console.log(typeof(user_selection[i])); // string
+//         //console.log(typeof(my_questions[i].correct_answer)); // string
+
+//         if(Number(user_selection[i]) === Number(my_questions[i].correct_answer)){
+//             score++;
+//         }
+//     }
+//     final_score = score; // I will use this later
+//     var p = document.createElement("p"); // create <p></p> element for question
+//     p.textContent = "Your final score: "+ score + " out of " + my_questions.length; // include question in <p></p>
+//     quiz.appendChild(p);
+
+//     // deactivate both "Prev" and "Next" button
+//     next.style.display = "none";
+//     prev.style.display = "none";
+
+//     // include Initial form & submit button:
+//     var label = document.createElement("label");
+//     label.setAttribute("for","user_initial");
+//     label.textContent = "Initial: ";
+//     var input = document.createElement("input");
+//     input.setAttribute("type","text");
+//     input.setAttribute("id","user_initial")
+//     quiz.appendChild(label);
+//     quiz.appendChild(input);
+    
+//     var input2 = document.createElement("input");
+//     input2.setAttribute("type","submit");
+//     input2.setAttribute("id","submit_button");
+//     input2.setAttribute("value","Submit");
+//     quiz.appendChild(input2);
+
+//     // when click "Submit" button, retrieve the user info and show it again.
+//     var submit_button = document.querySelector("#submit_button");
+//     submit_button.addEventListener("click", retrieve_score);
+// }
+
+// function retrieve_score(){
+//     // save user info to local storage:
+//     var initial = document.querySelector("#user_initial");
+//     var current_initial = initial.value;
+//     localStorage.setItem("initial",current_initial);
+
+//     var score = final_score;
+//     localStorage.setItem("score",score);
+
+//     // retrieve user info from the local storage:
+//     var last_initial = localStorage.getItem("initial");
+//     var last_score = localStorage.getItem("score");
+
+//     // Now, clear the previous question & show the saved info:
+//     remove_previous_question();
+//     stopwatch.style.display = "none"; // hide stopwatch
+
+//     var h2 = document.createElement("h2");
+//     h2.textContent = "Highscores:"
+//     var p = document.createElement("p");
+//     p.textContent = last_initial + ": " + last_score
+//     quiz.appendChild(h2);
+//     quiz.appendChild(p);
+// }
+
+
+// // Show stopwatch ====================================================== /
+// function start_timer(){
+//     if(timer_status === "off"){
+//         // if timer is "off" turn it on
+//         stopwatch.style.display = "block"; // show stopwatch
+//         stopwatch.children[0].textContent = ""; // hide any remaining text
+
+//         time_left = 60;
+//         timer_status = setInterval(show_stopwatch,1000);
+//         function show_stopwatch(){
+//             if(time_left > 0){
+//                 stopwatch.children[0].textContent = "Time Left: " + time_left + " sec";
+//                 time_left --;
+//                 console.log('jw')
+//             }else{
+//                 show_score();
+//                 stopwatch.children[0].textContent = "Time Over!";
+//                 clearInterval(timer_status); // kill countdown    
+//             }
+//         }
+//     }
+// }
+
+// function reset_timer(){
+//     // clear opened timer, and switch the status to "off"
+//     clearInterval(timer_status);
+//     timer_status = "off";
+// }
+
+// function generate_quiz(){
+//     reset();
+//     display_next_question();
+//     start_timer();
+// }
+
+// start_quiz.addEventListener("click", generate_quiz);
