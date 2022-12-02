@@ -64,7 +64,15 @@ form button{
   margin-bottom: 10px;
 }
 
-
+ul{
+  list-style-type: none;
+  background-color: yellowgreen;
+  padding: 0; /* remove default left padding */
+  padding-top: 10px;
+  padding-bottom: 10px;
+  text-align: center;
+  /*margin: 0;*/
+}
 
 
 
