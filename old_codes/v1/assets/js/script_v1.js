@@ -1,3 +1,32 @@
+var search_button = document.getElementById("search_button");
+var user_city = document.getElementById("user_city");
+
+function search_city(event){
+    event.preventDefault();
+    var city = document.getElementById("city");
+    var user_city1 = city.value;
+    console.log(user_city1);
+
+    // store to the localstorage:
+    localStorage.setItem("user_city",user_city1);
+
+    // retrieve from the local storage:
+    var user_city2 = localStorage.getItem("user_city");
+    console.log(user_city2);
+
+    var ul = document.createElement("ul");
+    var li = document.createElement("li");
+    li.textContent = user_city2;
+    ul.appendChild(li);
+    user_city.appendChild(ul);
+}
+
+
+search_button.addEventListener("click",search_city);
+
+
+
+
 /* Link to HTML elements =============================================== */
 
 
