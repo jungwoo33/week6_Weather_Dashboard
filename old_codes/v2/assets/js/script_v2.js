@@ -4,48 +4,40 @@ var user_city_new = []; // create empty user_city array at the beginning
 var city_num = 5; // set the initial city number to 5; this is for the arry initialization
 var city_count = 0;
 
-/*
-var jw = [];
-jw[0] = 'jw';
-jw[1] = 'jw1'
-console.log(jw[0]);
-console.log(jw[1]);
-*/
 
 function search_city(event){
     event.preventDefault();
     var city = document.getElementById("city");
     var i = city_count;
-    var j = i+1;
-    var city_value = city.value;
 
-    user_city_new[0] = city_value;
-    console.log(user_city_new[0]);
-
-    if(j>city_num){
+    if(i>city_num-1){
         city_count = 0;
         i = city_count;
     }
+
+    var city_value = city.value;
     console.log(city_value);
-    console.log(i);
+
     user_city_new[i] = city_value;
     console.log(user_city_new[i]);
 
     // store to the localstorage:
     localStorage.setItem("user_city_new",user_city_new);
 
-    // retrieve from the local storage:
-    var user_city_new = localStorage.getItem("user_city_new");
-    console.log(user_city_new);
-
     var ul = document.createElement("ul");
+    var li = document.createElement("li");
+    li.textContent = user_city_new[i];
+    ul.appendChild(li);
+    user_city.appendChild(ul);
     
+    /*
     for(i=0;i<city_num;i++){
         var li = document.createElement("li");
         li.textContent = user_city_new[i];
         ul.appendChild(li);
     }
     user_city.appendChild(ul);
+    */
 
     city_count = city_count + 1; // for the next use
 }
