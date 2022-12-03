@@ -3,7 +3,41 @@ var user_city = document.getElementById("user_city");
 var user_city_new = []; // create empty user_city array at the beginning
 var city_num = 5; // set the initial city number to 5; this is for the arry initialization
 var city_count = 0;
+var lon = 0.0;
+var lat = 0.0;
 
+function get_city_lonlat(input){
+    // insert the api url
+    //var request_url = "https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}";
+    var jw_api_key = "4ed7c4f0f170e3b9e35db228ebe6ff8c";
+    var city_name = input;
+    var limit = 5;
+    //var request_url = "http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}"
+    var request_url = "http://api.openweathermap.org/geo/1.0/direct?q=";
+    request_url = request_url + city_name + "&limit=" + limit + "&appid=" + jw_api_key;
+
+    fetch(request_url).then(function(response){
+        return response.json();
+    }).then(function(data){
+        console.log(data);
+
+        // let's find the city in the USA only:
+        for(var i=0;i<limit;i++){
+            if(data[i].country === "US"){
+                lon = data[i].lon;
+                lat = data[i].lat;
+                console.log(lon);
+                console.log(lat);
+                break; // exit for loop
+            }
+        }
+    });
+}
+
+function get_city_weather(){
+    // insert the api url
+    //var request_url = "https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}";
+}
 
 function search_city(event){
     event.preventDefault();
@@ -38,6 +72,11 @@ function search_city(event){
     }
     user_city.appendChild(ul);
     */
+
+    /* call weathermap api to find lonlat */
+    get_city_lonlat('London'); /* let's test with london */
+    console.log(lon);
+    console.log(lat);
 
     city_count = city_count + 1; // for the next use
 }
