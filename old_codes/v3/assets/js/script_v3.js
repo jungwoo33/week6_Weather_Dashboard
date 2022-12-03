@@ -1,5 +1,8 @@
 var search_button = document.getElementById("search_button");
 var user_city = document.getElementById("user_city");
+var today = document.getElementById("today");
+var forecast = document.getElementById("forecast");
+
 var user_city_new = []; // create empty user_city array at the beginning
 var city_num = 5; // set the initial city number to 5; this is for the arry initialization
 var city_count = 0;
@@ -37,6 +40,77 @@ function get_city_lonlat(input){
 function get_city_weather(){
     // insert the api url
     //var request_url = "https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}";
+    var jw_api_key = "4ed7c4f0f170e3b9e35db228ebe6ff8c";
+    var request_url = "https://api.openweathermap.org/data/2.5/forecast?lat="
+    //request_url = request_url + lat + "&lon=" + lon + "&appid=" + jw_api_key;
+    request_url = request_url + lat + "&lon=" + lon + "&units=metric&appid=" + jw_api_key; // I will use metric unit
+
+    fetch(request_url).then(function(response){
+        return response.json();
+    }).then(function(data){
+        console.log(data);
+        console.log(data.list.length); // = 40
+
+        // let's fill "column_2_1", i.e., today information        
+        // find today's date
+        var time_text = data.list[0].dt_txt.split(" ")
+        var day_text = time_text[0]; // yyyy-mm-dd
+        var day_text2 = day_text.split("-");
+        var yyyy = day_text2[0];
+        var mm = day_text2[1];
+        var dd = day_text2[2];
+        var day_text3 = mm + '/' + (dd-1) + '/' + yyyy; // mm/dd/yyyy, note: this is incorrect approach to get Today's date from the given forecast information. But, let's keep it and move on
+
+        var h1 = document.createElement("h1");
+        h1.textContent = "Austin" + " (" + day_text3 + ")"; // I will update this later from local localStorage
+        today.appendChild(h1);
+        
+        // include temp, wind, humidity:
+        var temp = data.list[0].main.temp;
+        var humidity = data.list[0].main.humidity;
+        var wind = data.list[0].wind.speed;
+        var p1 = document.createElement("p");
+        var p2 = document.createElement("p");
+        var p3 = document.createElement("p");
+        p1.textContent = "Temp: " + temp + " ["+'\u2103'+"]";
+        p2.textContent = "Wind: " + wind + " [m/s]";
+        p3.textContent = "Humidity: " + humidity + " [%]";
+        today.appendChild(p1);
+        today.appendChild(p2);
+        today.appendChild(p3);
+
+        // let's fill "column_2_2", i.e., forecast information
+        for(var i=0;i<5;i++){ // 5day forecast with 3 hr interval; i.e., each day has 8 time data
+            var t=(i*8)+4; // select 12pm each forecast day
+            var time_text = data.list[t].dt_txt.split(" ")
+            var day_text = time_text[0]; // yyyy-mm-dd
+            var day_text2 = day_text.split("-");
+            var yyyy = day_text2[0];
+            var mm = day_text2[1];
+            var dd = day_text2[2];
+            var day_text3 = mm + '/' + dd + '/' + yyyy; // mm/dd/yyyy
+            
+            var buff = "today+" + (i+1);
+            var forecast_day = document.getElementById(buff);
+            var h1 = document.createElement("h1");
+            h1.textContent = day_text3
+            forecast_day.appendChild(h1);
+
+            // include temp, wind, humidity:
+            var temp = data.list[t].main.temp;
+            var humidity = data.list[t].main.humidity;
+            var wind = data.list[t].wind.speed;
+            var p1 = document.createElement("p");
+            var p2 = document.createElement("p");
+            var p3 = document.createElement("p");
+            p1.textContent = "Temp: " + temp + " ["+'\u2103'+"]";
+            p2.textContent = "Wind: " + wind + " [m/s]";
+            p3.textContent = "Humidity: " + humidity + " [%]";
+            forecast_day.appendChild(p1);
+            forecast_day.appendChild(p2);
+            forecast_day.appendChild(p3);            
+        };
+    });
 }
 
 function search_city(event){
@@ -74,7 +148,8 @@ function search_city(event){
     */
 
     /* call weathermap api to find lonlat */
-    get_city_lonlat('London'); /* let's test with london */
+    get_city_lonlat('Austin'); /* let's test with Austin */
+    get_city_weather();
     console.log(lon);
     console.log(lat);
 
