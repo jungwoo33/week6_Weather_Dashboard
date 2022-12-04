@@ -15,7 +15,6 @@ var forecast = document.getElementById("forecast");
 var city_num = 5; // set the initial city number to 5; this is for the arry initialization
 var city_count = 0;
 
-
 var lon = 0.0;
 var lat = 0.0;
 
@@ -69,7 +68,6 @@ function get_city_weather(){
     }
 
 
-
     // insert the api url
     //var request_url = "https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}";
     var jw_api_key = "4ed7c4f0f170e3b9e35db228ebe6ff8c";
@@ -91,7 +89,7 @@ function get_city_weather(){
         var yyyy = day_text2[0];
         var mm = day_text2[1];
         var dd = day_text2[2];
-        var day_text3 = mm + '/' + (dd-1) + '/' + yyyy; // mm/dd/yyyy, note: this is incorrect approach to get Today's date from the given forecast information. But, let's keep it and move on
+        var day_text3 = mm + '/' + dd + '/' + yyyy; // mm/dd/yyyy, note: this is incorrect approach to get Today's date from the given forecast information. But, let's keep it and move on
 
         var h1 = document.createElement("h1");
         h1.textContent = new_city + " (" + day_text3 + ")";
@@ -200,64 +198,11 @@ function search_city(event){
     localStorage.setItem("old_city",new_city);
 
     if(city_count === 0){
-        var button = document.createElement("input");
-        button.setAttribute("type","button");
-        button.setAttribute("id",city_count);
-        button.setAttribute("value",new_city);
-        user_city.appendChild(button);
-        
-        /*
         var ul = document.createElement("ul");
         var li = document.createElement("li");
         li.textContent = new_city;
         ul.appendChild(li);
         user_city.appendChild(ul);
-        */
-    }else{
-        var old_city = localStorage.getItem("old_city");
-        var button = document.createElement("input");
-        button.setAttribute("type","button");
-        button.setAttribute("id",city_count);
-        button.setAttribute("value",old_city);
-        user_city.appendChild(button);
-
-        /*
-        var old_city = localStorage.getItem("old_city");
-        var ul = document.createElement("ul");
-        var li = document.createElement("li");
-        li.textContent = old_city;
-        ul.appendChild(li);
-        user_city.appendChild(ul);    
-        */
-    }
-
-    /* call weathermap api to find lonlat */
-    get_city_lonlat(new_city); // find lon/lat first
-    get_city_weather(); // then find the weather
-
-    city_count = city_count + 1; // for the next use
-}
-
-
-//search_button.addEventListener("click",search_city);
-
-function test(event){
-    event.preventDefault();
-    console.log(user_city.firstChild[0].getAttribute("id"));
-    //var city = user_city.name;
-    //console.log(city);
-
-    new_city = city; // receive new city name when "click"
-
-    // store to the localstorage as a "old_city":
-    localStorage.setItem("old_city",new_city);
-
-    if(city_count === 0){
-        var ul = document.createElement("ul");
-        var li = document.createElement("li");
-        li.textContent = new_city;
-        ul.appendChild(li);
-        user_city.appendChild(ul);    
     }else{
         var old_city = localStorage.getItem("old_city");
         var ul = document.createElement("ul");
@@ -276,5 +221,3 @@ function test(event){
 
 
 search_button.addEventListener("click",search_city);
-user_city.addEventListener("click",test);
-
