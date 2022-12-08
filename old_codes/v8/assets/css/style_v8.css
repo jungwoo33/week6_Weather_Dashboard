@@ -1,6 +1,6 @@
 body {
   font-family: 'Open Sans', sans-serif;
-  font-size: 16px;
+  font-size: 100%;
 }
 
 header{
@@ -14,7 +14,6 @@ header{
   padding-bottom: 1.5em;
   background-color: blue;
   color: white;
-  margin: 0;
 }
 
 main{
@@ -25,12 +24,33 @@ main{
   display: flex;
   flex-direction: row;
 }
+h1{
+  padding-top: 1.0em;
+  padding-bottom: 1.0em;
+}
+h2 {
+  display: block;
+  font-size: 1.5em;
+  margin-block-start: 0.83em;
+  margin-block-end: 0.83em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+}
+p {
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+}
 
 .column_1{
   display: flex;
   flex-direction: column;
-  flex-basis: 20%; /* 20% of width */
-  /*width: 20%;*/
+  width: 20%;
   flex-wrap: wrap;
   /*align-items: flex-start;*/
   /*text-align: left;*/
@@ -43,8 +63,7 @@ main{
 .column_2{
   display: flex;
   flex-direction: column; /* to stack horizontally first then vertical shift down when not enough space */
-  flex-basis: 80%; /* 80% of width */
-  /*width: 80%;*/
+  width: 80%;
   flex-wrap: wrap;
 
   padding-left: 0.5em;
@@ -80,7 +99,7 @@ main{
 input#city{
   width: 100%;
   padding: 10px;
-  padding-right: 0;
+  /*padding-right: 0;*/
   background: #f1f1f1;
   font-size: 17px;
   border: 1px solid grey;
@@ -97,6 +116,17 @@ button#search_button{
   cursor: pointer;  
   margin-bottom: 10px;
 }
+button.city_button{
+  width: 100%;
+  padding: 10px;
+  background-color: yellowgreen;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  cursor: pointer;  
+  margin-bottom: 10px;
+}
+
 
 ul{
   list-style-type: none;

@@ -1,7 +1,5 @@
 var search_button = document.getElementById("search_button");
-
 var user_city = document.getElementById("user_city");
-var new_city = "";
 var today = document.getElementById("today");
 var today1 = document.getElementById("today1");
 var today2 = document.getElementById("today2");
@@ -11,8 +9,8 @@ var today5 = document.getElementById("today5");
 
 var forecast = document.getElementById("forecast");
 
-//var user_city_new = []; // create empty user_city array at the beginning
-var city_num = 5; // set the initial city number to 5; this is for the arry initialization
+var new_city = "";
+var old_city = [];
 var city_count = 0;
 
 var lon = 0.0;
@@ -188,66 +186,57 @@ function get_city_weather(){
     });
 }
 
-function search_city(event){
+function search_new_city(event){
     event.preventDefault();
 
     var city = document.getElementById("city");
     new_city = city.value; // receive new city name when "click"
+    // only if "new_city" is given, search for the city and find weather
+    if(new_city){
+        // create a button and store the info to the local storage
+        var city_button = document.createElement("button");
+        city_button.setAttribute("class","city_button");
 
-    // store to the localstorage as a "old_city":
-    localStorage.setItem("old_city",new_city);
+        // if the new_city already exists, do not create a button or store the value to the local storage:
+        var check = 0;
+        if(city_count == 0){
+            old_city[0] = new_city;
+            city_count = city_count + 1;
+            city_button.textContent = new_city;
+            user_city.appendChild(city_button);
+        }else{
+            // check if identical city name is already stored
+            for(var i=0;i<city_count;i++){
+                if(old_city[i]===new_city){
+                    check = check + 1;
+                }
+            }
+            // only if this is the new search, store the new_city to old_city and create the button
+            if(check === 0){
+                old_city[city_count] = new_city;
+                city_button.textContent = new_city;
+                user_city.appendChild(city_button);
+                city_count = city_count + 1;
+            }
+        }
 
-    /*
-    if(city_count === 0){
-        var ul = document.createElement("ul");
-        var li = document.createElement("li");
-        li.setAttribute("id",city_count);
-        li.textContent = new_city;
-        ul.appendChild(li);
-        user_city.appendChild(ul);
-    }else{
-        var old_city = localStorage.getItem("old_city");
-        var ul = document.createElement("ul");
-        var li = document.createElement("li");
-        li.setAttribute("id",city_count);
-        li.textContent = old_city;
-        ul.appendChild(li);
-        user_city.appendChild(ul);    
+        // store the old_city to the local storage as JSON
+        localStorage.setItem("old_city",JSON.stringify(old_city));
+
+        /* call weathermap api to find lonlat */
+        get_city_lonlat(new_city); // find lon/lat first
+        get_city_weather(); // then find the weather    
     }
-    */
-    if(city_count === 0){
-        var li = document.getElementById(city_count);
-        //li.setAttribute("id",city_count);
-        li.textContent = new_city;
-        //ul.appendChild(li);
-        //user_city.appendChild(ul);
-    }else{
-        var old_city = localStorage.getItem("old_city");
-        //var ul = document.createElement("ul");
-        var li = document.getElementById(city_count);
-        //li.setAttribute("id",city_count);
-        li.textContent = old_city;
-        //ul.appendChild(li);
-        //user_city.appendChild(ul);    
-    }
-    /* call weathermap api to find lonlat */
-    get_city_lonlat(new_city); // find lon/lat first
-    get_city_weather(); // then find the weather
-
-    city_count = city_count + 1; // for the next use
 }
 
-search_button.addEventListener("click",search_city);
-
-function test(){
-    var city = li_city.textContent;
-    console.log(city);
+function search_old_city(){
+    var self = $(this);
+    var city = self.text();
+    //console.log(self);
+    //console.log(city);
 
     new_city = city; // receive new city name when "click"
 
-    // store to the localstorage as a "old_city":
-    localStorage.setItem("old_city",new_city);
-
     /* call weathermap api to find lonlat */
     get_city_lonlat(new_city); // find lon/lat first
     get_city_weather(); // then find the weather
@@ -255,28 +244,6 @@ function test(){
     city_count = city_count + 1; // for the next use
 }
 
+search_button.addEventListener("click",search_new_city);
+$(document).on("click", ".city_button", search_old_city);
 
-var li_city = document.getElementById("0");
-if(li_city){
-    li_city.onclick = function() {test()};
-}
-
-var li_city = document.getElementById("1");
-if(li_city){
-    li_city.onclick = function() {test()};
-}
-
-var li_city = document.getElementById("2");
-if(li_city){
-    li_city.onclick = function() {test()};
-}
-
-var li_city = document.getElementById("3");
-if(li_city){
-    li_city.onclick = function() {test()};
-}
-
-var li_city = document.getElementById("4");
-if(li_city){
-    li_city.onclick = function() {test()};
-}
