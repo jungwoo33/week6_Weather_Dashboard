@@ -1,0 +1,132 @@
+body {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 100%;
+}
+
+header{
+  /*
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  */
+  text-align: center;
+  padding-top: 1.5em;
+  padding-bottom: 1.5em;
+  background-color: blue;
+  color: white;
+}
+
+main{
+  flex-direction: row;
+  width: 100%;
+}
+.container_box{
+  display: flex;
+  flex-direction: row;
+}
+h1{
+  padding-top: 1.0em;
+  padding-bottom: 1.0em;
+}
+h2 {
+  display: block;
+  font-size: 1.5em;
+  margin-block-start: 0.83em;
+  margin-block-end: 0.83em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  font-weight: bold;
+}
+p {
+  display: block;
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+  margin-inline-start: 0px;
+  margin-inline-end: 0px;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+}
+
+.column_1{
+  display: flex;
+  flex-direction: column;
+  width: 20%;
+  flex-wrap: wrap;
+  /*align-items: flex-start;*/
+  /*text-align: left;*/
+  padding-left: 1.0em;
+  padding-right: 1.0em;
+
+  border-right: solid #ffc107;
+  border-width: 0.2em;
+}
+.column_2{
+  display: flex;
+  flex-direction: column; /* to stack horizontally first then vertical shift down when not enough space */
+  width: 80%;
+  flex-wrap: wrap;
+
+  padding-left: 0.5em;
+}
+.column_2_1{
+  display: flex;
+  flex-direction: column;
+  width: 100%; /* 100 % of column_2 */
+  flex-wrap: wrap;
+  /*border:solid black;*/ /*this will be setting in javascript */
+}
+.column_2_2{
+  display: flex;
+  flex-direction: row;
+  width: 100%; /* 100 % of column_2 */
+  flex-wrap: wrap;
+  /*border:solid black;*/
+}
+
+.column_2_2_1, .column_2_2_2, .column_2_2_3, .column_2_2_4, .column_2_2_5{
+  display: flex;
+  flex-direction: column;
+  width: 18%; /* each has 20% of column_2_2 */  
+  flex-wrap: wrap;
+  /*border:solid #2196F3;*/
+  margin-right: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+#city_search{
+  border-bottom: solid #000000;
+}
+input#city{
+  width: 100%;
+  padding: 10px;
+  /*padding-right: 0;*/
+  background: #f1f1f1;
+  font-size: 17px;
+  border: 1px solid grey;
+  margin-bottom: 10px;
+}
+
+button#search_button{
+  width: 100%;
+  padding: 10px;
+  background: #2196F3;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  cursor: pointer;  
+  margin-bottom: 10px;
+}
+button.city_button{
+  width: 100%;
+  padding: 10px;
+  background-color: yellowgreen;
+  color: white;
+  font-size: 17px;
+  border: 1px solid grey;
+  cursor: pointer;  
+  margin-bottom: 10px;
+}
+
+#user_city{
+  margin-top: 1.0em;
+}
